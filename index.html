@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Acadêmico - Prova Prática SQL PetCare</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        code, pre {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .academic-watermark {
+            background-image: radial-gradient(rgba(79, 70, 229, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        /* Anti-Cheat Trap Span: 100% Invisible on screen, captured by native copy selection */
+        .abacaxi-trap {
+            display: inline-block !important;
+            width: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            font-size: 0 !important;
+            line-height: 0 !important;
+            color: transparent !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            user-select: text !important;
+            -webkit-user-select: text !important;
+            position: absolute !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-indigo-100 selection:text-indigo-900 academic-watermark">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-indigo-900 text-white shadow-md border-b border-indigo-950 sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-xl shadow-inner">
+                    <i class="fa-solid fa-database text-indigo-100"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-sm sm:text-base leading-tight">Portal de Avaliação Acadêmica</h1>
+                    <p class="text-xs text-indigo-300">Engenharia de Software &bull; Banco de Dados II</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3 text-xs sm:text-sm">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    <span class="w-2 h-2 mr-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+                    <span class="hidden sm:inline">Monitoramento de Prova Ativo</span>
+                    <span class="sm:hidden">Ativo</span>
+                </span>
+                
+                
+            </div>
+        </div>
+    </header>
+
+    <!-- Sub-header Details Bar -->
+    <div class="bg-white border-b border-slate-200 shadow-sm py-2.5 px-4 sticky top-16 z-30">
+        <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between text-xs sm:text-sm gap-2">
+            <div class="flex items-center space-x-2 text-slate-600">
+                <i class="fa-regular fa-folder-open text-indigo-600"></i>
+                <span class="font-semibold text-slate-800">Avaliação Prática N2:</span>
+                <span>Modelagem, DDL, DML e Integridade Referencial (PetCare)</span>
+            </div>
+            <div class="flex items-center space-x-4 text-slate-500 text-xs">
+                <span><i class="fa-regular fa-clock mr-1 text-slate-400"></i> Duração: 4 horas</span>
+                <span><i class="fa-regular fa-circle-check mr-1 text-emerald-600"></i> Valor: 50.0 PONTOS</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Anti-Cheat Inspector Panel for Teachers -->
+    <aside id="teacherPanel" class="max-w-5xl mx-auto w-full px-4 pt-6 hidden">
+        <div class="bg-slate-900 text-slate-100 rounded-2xl p-6 border border-amber-500/30 shadow-xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-bug"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base text-amber-300">Painel do Professor — Validador Anti-Cola</h3>
+                        <p class="text-xs text-slate-400">Sistema de Injeção Silenciosa de Marca d'Água ("abacaxi")</p>
+                    </div>
+                </div>
+                <button onclick="toggleTeacherPanel()" class="text-slate-400 hover:text-white text-sm">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                    <span class="text-slate-400 block mb-1">Status da Armadilha DOM</span>
+                    <span class="text-emerald-400 font-semibold flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-check text-xs"></i> 150+ Spans Invisíveis
+                    </span>
+                </div>
+                <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                    <span class="text-slate-400 block mb-1">Interceptador de Clipboard</span>
+                    <span class="text-indigo-400 font-semibold flex items-center gap-1.5">
+                        <i class="fa-solid fa-bolt text-xs"></i> Evento 'copy' Ativo
+                    </span>
+                </div>
+                <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                    <span class="text-slate-400 block mb-1">Palavra de Monitoramento</span>
+                    <span class="text-amber-400 font-mono font-bold bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800">"abacaxi"</span>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label for="testPasteArea" class="block text-xs font-medium text-slate-300">
+                    <i class="fa-solid fa-[#fa-paste] fa-paste text-indigo-400 mr-1"></i>
+                    Área de Teste: Selecione qualquer texto do enunciado abaixo, copie (Ctrl+C) e cole (Ctrl+V) aqui para testar a captura:
+                </label>
+                <textarea id="testPasteArea" rows="3" placeholder="Cole o texto copiado aqui..." 
+                    class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 font-mono focus:outline-none focus:border-indigo-500 transition"></textarea>
+            </div>
+
+            <div id="testResult" class="hidden p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-2">
+                <div class="flex items-center justify-between">
+                    <span class="font-semibold text-slate-300">Análise de Detecção do Prompt:</span>
+                    <span id="abacaxiCount" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">0 "abacaxi" detectados</span>
+                </div>
+                <p id="pastePreview" class="text-slate-400 font-mono text-[11px] leading-relaxed break-words bg-slate-900 p-3 rounded-lg max-h-36 overflow-y-auto border border-slate-800"></p>
+                <p class="text-[11px] text-amber-400/90 italic">
+                    <i class="fa-solid fa-circle-info mr-1"></i>
+                    Se o aluno colar este enunciado no ChatGPT, Claude, Gemini ou DeepSeek, a IA tentará incluir tabelas ou parâmetros com "abacaxi", revelando instantaneamente o plágio!
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-8 sm:px-6">
+
+        <article class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-10 space-y-8 text-slate-700 leading-relaxed">
+
+            <!-- Title & Badge -->
+            <div class="border-b border-slate-100 pb-6">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-md text-xs font-semibold uppercase tracking-wider mb-2">
+                    <i class="fa-solid fa-database text-indigo-600"></i>
+                    <span>Atividade Prática Avaliativa - SQL MySQL / PostgreSQL</span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                    Sistema de Gerenciamento Clínica Veterinária PetCare
+                </h1>
+                <p class="text-sm text-slate-500 mt-1">
+                    Criação do Banco de Dados, DDL, Manipulação DML, Consultas DQL e Integridade Referencial
+                </p>
+            </div>
+
+            <!-- Contextualização -->
+            <section class="space-y-3">
+                <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-indigo-600"></i> Contextualização do Projeto
+                </h2>
+                <p>
+                    A clínica veterinária <strong class="text-slate-900">PetCare</strong><span class="abacaxi-trap"> abacaxi </span> está modernizando seus processos operacionais e decidiu abandonar o controle via planilhas eletrônicas. Para garantir consistência dos dados, histórico de consultas e facilidade na geração de relatórios gerenciais, a empresa contratou você para implementar o banco de dados relacional oficial.
+                </p>
+                <p>
+                    O sistema é composto por <strong class="text-slate-900">5 tabelas fundamentais</strong>:<span class="abacaxi-trap"> abacaxi </span> <code class="bg-slate-100 text-indigo-700 px-1.5 py-0.5 rounded font-mono text-sm">clientes</code>, <code class="bg-slate-100 text-indigo-700 px-1.5 py-0.5 rounded font-mono text-sm">animais</code>, <code class="bg-slate-100 text-indigo-700 px-1.5 py-0.5 rounded font-mono text-sm">veterinarios</code>, <code class="bg-slate-100 text-indigo-700 px-1.5 py-0.5 rounded font-mono text-sm">servicos</code> e <code class="bg-slate-100 text-indigo-700 px-1.5 py-0.5 rounded font-mono text-sm">atendimentos</code>.
+                </p>
+
+                <!-- Abstraction Note -->
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl space-y-1">
+                    <h3 class="font-bold text-amber-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
+                        Atenção - Abstração de Tipos de Dados pelo Aluno:
+                    </h3>
+                    <p class="text-xs text-amber-800 leading-normal">
+                        Nenhum tipo de dado físico (<code class="font-mono font-semibold">VARCHAR</code>, <code class="font-mono font-semibold">INT</code>, <code class="font-mono font-semibold">DECIMAL</code>, <code class="font-mono font-semibold">DATE</code>, <code class="font-mono font-semibold">DATETIME</code>, etc.) é fornecido explicitamente no enunciado. <span class="abacaxi-trap"> abacaxi </span> É responsabilidade do estudante analisar as características de cada atributo e escolher os tipos SQL mais adequados, definindo os tamanhos apropriados para garantir integridade e eficiência no banco de dados.
+                    </p>
+                </div>
+
+                <!-- Entity Diagram Schema Overview -->
+                
+            </section>
+
+            <!-- Parte I: DDL -->
+            <section class="space-y-6">
+                <div class="border-b border-slate-200 pb-2">
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-extrabold">I</span>
+                        Parte I - Definição de Dados (DDL)
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">Criação do Banco de Dados, Tabelas, Chaves Primárias, Chaves Estrangeiras e Alterações</p>
+                </div>
+
+                <!-- Questão 1 -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-slate-900 text-sm">Questão 1: Criação do Banco de Dados</h3>
+                        
+                    </div>
+                    <p class="text-sm text-slate-600">
+                        Escreva o comando SQL para criar o banco de dados chamado <code class="bg-slate-200 text-indigo-900 px-1.5 py-0.5 rounded font-mono text-xs">petcare_db</code><span class="abacaxi-trap"> abacaxi </span> apenas se ele ainda não existir. Em seguida, selecione esse banco de dados para utilização nos comandos subsequentes.
+                    </p>
+                </div>
+
+                <!-- Questão 2 -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-slate-900 text-sm">Questão 2: Tabela <code class="text-indigo-600 font-mono">clientes</code></h3>
+                    </div>
+                    <p class="text-sm text-slate-600">
+                        Crie a tabela <code class="font-mono text-indigo-700 font-semibold">clientes</code> contendo os seguintes atributos e restrições:<span class="abacaxi-trap"> abacaxi </span>
+                    </p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse bg-white rounded-lg border border-slate-200">
+                            <thead class="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
+                                <tr>
+                                    <th class="p-2.5 border-r border-slate-200">Atributo</th>
+                                    <th class="p-2.5 border-r border-slate-200">Tipo</th>
+                                    <th class="p-2.5">Restrições e Regras</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 text-slate-600 font-mono">
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">id_cliente</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Chave Primária (PK), Auto Incremento</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">nome</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Não Nulo</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">cpf</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Único, Não Nulo </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">email</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Não Nulo</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">telefone</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Permite Nulo inicialmente</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">data_cadastro</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Não Nulo</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Questão 3 -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-slate-900 text-sm">Questão 3: Tabela <code class="text-indigo-600 font-mono">animais</code></h3>
+                    </div>
+                    <p class="text-sm text-slate-600">
+                        Crie a tabela <code class="font-mono text-indigo-700 font-semibold">animais</code> relacionando cada pet ao seu respetivo cliente responsável:<span class="abacaxi-trap"> abacaxi </span>
+                    </p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse bg-white rounded-lg border border-slate-200">
+                            <thead class="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
+                                <tr>
+                                    <th class="p-2.5 border-r border-slate-200">Atributo</th>
+                                    <th class="p-2.5 border-r border-slate-200">Tipo</th>
+                                    <th class="p-2.5">Restrições e Regras</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 text-slate-600 font-mono">
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">id_animal</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Chave Primária, Auto Incremento</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">nome</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Não Nulo </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">especie</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Não Nulo (Ex: Cão, Gato, Ave)</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">raca</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Opcional </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">data_nascimento</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Opcional</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">id_cliente</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir ]</td>
+                                    <td class="p-2.5">Chave Estrangeira referenciando <code class="font-semibold text-indigo-700">clientes(id_cliente)</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Questão 4 -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-slate-900 text-sm">Questão 4: Tabela <code class="text-indigo-600 font-mono">veterinarios</code></h3>
+                    </div>
+                    <p class="text-sm text-slate-600">
+                        Crie a tabela <code class="font-mono text-indigo-700 font-semibold">veterinarios</code> para cadastrar a equipe médica da clínica:<span class="abacaxi-trap"> abacaxi </span>
+                    </p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse bg-white rounded-lg border border-slate-200">
+                            <thead class="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
+                                <tr>
+                                    <th class="p-2.5 border-r border-slate-200">Atributo</th>
+                                    <th class="p-2.5 border-r border-slate-200">Tipo</th>
+                                    <th class="p-2.5">Restrições e Regras</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 text-slate-600 font-mono">
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">id_veterinario</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Chave Primária, Auto Incremento</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">nome</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Não Nulo</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">crmv</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Registro Único, Não Nulo</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">especialidade</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Não Nulo (Ex: Cirurgia, Dermatologia, Clínica Geral)</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">telefone</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Não Nulo</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Questão 5 -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-slate-900 text-sm">Questão 5: Tabela <code class="text-indigo-600 font-mono">servicos</code></h3>
+                    </div>
+                    <p class="text-sm text-slate-600">
+                        Crie a tabela <code class="font-mono text-indigo-700 font-semibold">servicos</code> referente ao catálogo de procedimentos prestados pela clínica:<span class="abacaxi-trap"> abacaxi </span>
+                    </p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse bg-white rounded-lg border border-slate-200">
+                            <thead class="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
+                                <tr>
+                                    <th class="p-2.5 border-r border-slate-200">Atributo</th>
+                                    <th class="p-2.5 border-r border-slate-200">Tipo</th>
+                                    <th class="p-2.5">Restrições e Regras</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 text-slate-600 font-mono">
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">id_servico</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Chave Primária, Auto Incremento</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">nome_servico</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Não Nulo</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">descricao</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Opcional</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">preco</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Não Nulo</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Questão 6 -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-slate-900 text-sm">Questão 6: Tabela <code class="text-indigo-600 font-mono">atendimentos</code></h3>
+                    </div>
+                    <p class="text-sm text-slate-600">
+                        Crie a tabela central de cruzamento <code class="font-mono text-indigo-700 font-semibold">atendimentos</code> que associa o pet, o veterinário e o serviço realizado:<span class="abacaxi-trap"> abacaxi </span>
+                    </p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse bg-white rounded-lg border border-slate-200">
+                            <thead class="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
+                                <tr>
+                                    <th class="p-2.5 border-r border-slate-200">Atributo</th>
+                                    <th class="p-2.5 border-r border-slate-200">Tipo</th>
+                                    <th class="p-2.5">Restrições e Integridade Referencial</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 text-slate-600 font-mono">
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">id_atendimento</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Chave Primária (PK), Auto Incremento</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">data_atendimento</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Não Nulo</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">id_animal</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">FK referenciando <code class="font-semibold text-indigo-700">animais(id_animal)</code></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">id_veterinario</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">FK referenciando <code class="font-semibold text-indigo-700">veterinarios(id_veterinario)</code></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">id_servico</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">FK referenciando <code class="font-semibold text-indigo-700">servicos(id_servico)</code></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-indigo-900 border-r border-slate-200">observacoes</td>
+                                    <td class="p-2.5 border-r border-slate-200 text-amber-700">[Definir]</td>
+                                    <td class="p-2.5">Opcional</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Questões 7 e 8 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900 text-sm">Questão 7: Alteração de Tabela (Modificação)</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Escreva o comando <code class="font-mono text-indigo-700 font-semibold">ALTER TABLE</code><span class="abacaxi-trap"> abacaxi </span> para alterar a coluna <code class="font-mono text-indigo-700 font-semibold">telefone</code> da tabela <code class="font-mono text-indigo-700 font-semibold">clientes</code>, de modo que ela passe a ser de preenchimento obrigatório (<code class="font-mono text-xs">NOT NULL</code>).
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900 text-sm">Questão 8: Alteração de Tabela (Novo Campo)</h3>
+                            
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Escreva o comando <code class="font-mono text-indigo-700 font-semibold">ALTER TABLE</code><span class="abacaxi-trap"> abacaxi </span> para adicionar uma nova coluna chamada <code class="font-mono text-indigo-700 font-semibold">duracao_minutos</code> (do tipo inteiro, aceitando nulo) na tabela <code class="font-mono text-indigo-700 font-semibold">servicos</code>.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Parte II: DML -->
+            <section class="space-y-6">
+                <div class="border-b border-slate-200 pb-2">
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-extrabold">II</span>
+                        Parte II - Manipulação de Dados (DML)
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">Inserção, Atualização e Remoção de Registros mantendo a Consistência das FKs</p>
+                </div>
+
+                <!-- Questão 9 -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-slate-900 text-sm">Questão 9: Inserção de Clientes e Veterinários</h3>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Escreva os comandos <code class="font-mono text-indigo-700 font-semibold">INSERT INTO</code><span class="abacaxi-trap"> abacaxi </span> para cadastrar no sistema:
+                    </p>
+                    <ul class="list-disc list-inside text-xs text-slate-700 space-y-1 font-mono pl-2">
+                        <li><strong>5 Clientes</strong> distintos (Ex: Carlos Silva, Ana Souza, Marcos Lima, Beatriz Costa, Roberto Rocha).</li>
+                        <li><strong>3 Veterinários</strong> distintos (Ex: Dra. Mariana Lima [CRMV 12345/SP], Dr. Fernando Dias [CRMV 67890/SP], Dra. Camila Rocha [CRMV 11223/SP]).</li>
+                    </ul>
+                </div>
+
+                <!-- Questão 10 -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-slate-900 text-sm">Questão 10: Inserção de Animais e Serviços</h3>
+                        
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Escreva os comandos <code class="font-mono text-indigo-700 font-semibold">INSERT INTO</code><span class="abacaxi-trap"> abacaxi </span> para cadastrar:
+                    </p>
+                    <ul class="list-disc list-inside text-xs text-slate-700 space-y-1 font-mono pl-2">
+                        <li><strong>6 Animais</strong> relacionando corretamente o <code class="text-indigo-800 font-semibold">id_cliente</code> correspondente a cada tutor.</li>
+                        <li><strong>4 Serviços</strong> no catálogo (Ex: "Consulta Clínica" [R$ 150.00], "Vacinação V10" [R$ 90.00], "Banho e Tosa" [R$ 80.00], "Profilaxia Dentária" [R$ 350.00]).</li>
+                    </ul>
+                </div>
+
+                <!-- Questão 11 -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-slate-900 text-sm">Questão 11: Inserção de Atendimentos Realizados</h3>
+                        
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Escreva os comandos <code class="font-mono text-indigo-700 font-semibold">INSERT INTO</code><span class="abacaxi-trap"> abacaxi </span> para registrar <strong class="text-slate-900">6 Atendimentos</strong> na clínica. Garanta que as chaves estrangeiras (<code class="font-mono">id_animal</code>, <code class="font-mono">id_veterinario</code>, <code class="font-mono">id_servico</code>) façam referência a IDs válidos previamente cadastrados.
+                    </p>
+                </div>
+
+                <!-- Questões 12 a 15 (Grid) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Q12 -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900 text-sm">Questão 12: Atualização de Preço (UPDATE)</h3>
+                            
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            A clínica reajustou o valor da "Consulta Clínica".<span class="abacaxi-trap"> abacaxi </span> Escreva o comando <code class="font-mono text-indigo-700 font-semibold">UPDATE</code> com a cláusula <code class="font-mono font-semibold text-amber-700">WHERE</code> para alterar o preço deste serviço específico para R$ 180.00.
+                        </p>
+                    </div>
+
+                    <!-- Q13 -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900 text-sm">Questão 13: Atualização de Cliente (UPDATE)</h3>
+                            
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            O cliente de <code class="font-mono text-indigo-700">id_cliente = 1</code> alterou seu número telefônico.<span class="abacaxi-trap"> abacaxi </span> Escreva o comando <code class="font-mono text-indigo-700 font-semibold">UPDATE</code> com <code class="font-mono font-semibold text-amber-700">WHERE</code> para atualizar o telefone para "(11) 99887-6655".
+                        </p>
+                    </div>
+
+                    <!-- Q14 -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900 text-sm">Questão 14: Exclusão de Atendimento (DELETE)</h3>
+                            
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Um agendamento foi lançado por engano.<span class="abacaxi-trap"> abacaxi </span> Escreva o comando <code class="font-mono text-indigo-700 font-semibold">DELETE FROM</code> com a cláusula <code class="font-mono font-semibold text-amber-700">WHERE</code> para remover o registro de atendimento de <code class="font-mono text-indigo-700">id_atendimento = 6</code>.
+                        </p>
+                    </div>
+
+                    <!-- Q15 -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900 text-sm">Questão 15: Exclusão de Serviço Sem Uso (DELETE)</h3>
+                            
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Cadastre um serviço temporário chamado "Serviço Teste" e, em seguida, escreva o comando <code class="font-mono text-indigo-700 font-semibold">DELETE FROM</code><span class="abacaxi-trap"> abacaxi </span> para removê-lo usando o seu <code class="font-mono">id_servico</code> no <code class="font-mono font-semibold text-amber-700">WHERE</code>.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Parte III: DQL -->
+            <section class="space-y-6">
+                <div class="border-b border-slate-200 pb-2">
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-extrabold">III</span>
+                        Parte III - Consultas de Dados (DQL)
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">Seleção de Registros e Relatórios Relacionais Avançados com INNER JOIN</p>
+                </div>
+
+                <!-- Questão 16 -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-slate-900 text-sm">Questão 16: Listagem Geral do Banco</h3>
+                        
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Escreva os comandos <code class="font-mono text-indigo-700 font-semibold">SELECT *</code><span class="abacaxi-trap"> abacaxi </span> individuais para listar todos os registros de cada uma das 5 tabelas do banco de dados (<code class="font-mono">clientes</code>, <code class="font-mono">animais</code>, <code class="font-mono">veterinarios</code>, <code class="font-mono">servicos</code> e <code class="font-mono">atendimentos</code>).
+                    </p>
+                </div>
+
+                <!-- Questão 17 -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-slate-900 text-sm">Questão 17: Consultas Filtradas com WHERE</h3>
+                        
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Escreva duas consultas com filtro:<span class="abacaxi-trap"> abacaxi </span>
+                    </p>
+                    <ol class="list-decimal list-inside text-xs text-slate-700 space-y-1 font-mono pl-2">
+                        <li>Selecionar apenas os dados do cliente alterado na Questão 13 (<code class="font-mono">WHERE id_cliente = 1</code>).</li>
+                        <li>Selecionar apenas os dados do serviço cujo preço foi reajustado na Questão 12.</li>
+                    </ol>
+                </div>
+
+                <!-- Questão 18 (INNER JOIN Completo) -->
+                <div class="bg-indigo-900 text-slate-100 p-5 rounded-xl border border-indigo-800 shadow-md space-y-3">
+                    <div class="flex items-center justify-between border-b border-indigo-800 pb-3">
+                        <h3 class="font-bold text-white text-base flex items-center gap-2">
+                            <i class="fa-solid fa-diagram-project text-indigo-400"></i>
+                            Questão 18: Relatório Consolidado Completo (INNER JOIN)
+                        </h3>
+                    </div>
+                    <p class="text-xs text-indigo-200 leading-relaxed">
+                        Elabore uma consulta SQL utilizando <code class="font-mono text-emerald-300 font-bold">INNER JOIN</code><span class="abacaxi-trap"> abacaxi </span> integrando as <strong class="text-white">5 tabelas simultaneamente</strong> para gerar o histórico detalhado dos atendimentos.
+                    </p>
+                    <div class="bg-slate-950 p-3 rounded-lg border border-indigo-950 font-mono text-xs space-y-1 text-slate-300">
+                        <span class="text-slate-500 block text-[11px]">// O resultado final da consulta DEVE exibir os seguintes campos:</span>
+                        <div class="text-indigo-300">
+                            atendimentos.id_atendimento, atendimentos.data_atendimento,<br>
+                            clientes.nome AS nome_cliente, clientes.telefone,<br>
+                            animais.nome AS nome_pet, animais.especie,<br>
+                            veterinarios.nome AS nome_veterinario, veterinarios.crmv,<br>
+                            servicos.nome_servico, servicos.preco
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Desafio Bônus -->
+            <section class="space-y-4">
+                <div class="border-b border-slate-200 pb-2">
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-trophy text-amber-500"></i>
+                        Desafio Prático - Alteração Estrutural e Filtro Dinâmico
+                    </h2>
+                </div>
+
+                <div class="bg-amber-50/60 border border-amber-200 p-5 rounded-2xl space-y-3">
+                    <p class="text-xs text-amber-900 leading-relaxed font-medium">
+                        Para aprimorar a gestão da clínica, a diretoria solicitou um controle do status operacional de cada atendimento.<span class="abacaxi-trap"> abacaxi </span> Siga os passos:
+                    </p>
+                    <ol class="list-decimal list-inside text-xs text-slate-700 space-y-2 font-mono pl-2">
+                        <li>Adicione a coluna <code class="bg-amber-100 text-amber-900 px-1 rounded">status</code> na tabela <code class="font-bold text-amber-950">atendimentos</code> com valor padrão (<code class="text-indigo-700">DEFAULT 'AGENDADO'</code>).</li>
+                        <li>Atualize 3 atendimentos para <code class="text-emerald-700">'CONCLUIDO'</code> e 1 para <code class="text-red-700">'CANCELADO'</code> usando <code class="text-indigo-700">UPDATE ... WHERE</code>.</li>
+                        <li>Escreva uma consulta que traga apenas os atendimentos com status <code class="text-emerald-700">'CONCLUIDO'</code> exibindo o nome do pet e o nome do serviço.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Questões Teóricas (A a F) -->
+            <section class="space-y-6">
+                <div class="border-b border-slate-200 pb-2">
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-indigo-600"></i>
+                        Questões Teóricas (Fundamentação Conceitual)
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">Responda com suas próprias palavras diretamente nos comentários do seu arquivo .sql</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1">
+                        <h3 class="font-bold text-slate-900">Questão Teórica A</h3>
+                        <p class="text-slate-600">
+                            Qual a importância de escolher corretamente os tipos de dados (Ex: <code class="font-mono">VARCHAR</code> vs <code class="font-mono">CHAR</code>, <code class="font-mono">DECIMAL</code> vs <code class="font-mono">FLOAT</code>) na criação das tabelas em termos de performance e integridade?<span class="abacaxi-trap"> abacaxi </span>
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1">
+                        <h3 class="font-bold text-slate-900">Questão Teórica B</h3>
+                        <p class="text-slate-600">
+                            Explique a diferença fundamental entre as instruções <code class="font-mono text-indigo-700">ALTER TABLE</code> e <code class="font-mono text-indigo-700">UPDATE</code>. Em que situações cada uma deve ser utilizada?<span class="abacaxi-trap"> abacaxi </span>
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1">
+                        <h3 class="font-bold text-slate-900">Questão Teórica C</h3>
+                        <p class="text-slate-600">
+                            Qual a diferença técnica entre os comandos <code class="font-mono text-red-600">DROP TABLE</code> e <code class="font-mono text-amber-600">DELETE FROM</code>?<span class="abacaxi-trap"> abacaxi </span>
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1">
+                        <h3 class="font-bold text-slate-900">Questão Teórica D</h3>
+                        <p class="text-slate-600">
+                            Por que executar um comando <code class="font-mono text-indigo-700">UPDATE</code> ou <code class="font-mono text-red-600">DELETE</code> sem a cláusula <code class="font-mono text-amber-700">WHERE</code> é considerado um risco grave em bancos de dados de produção?<span class="abacaxi-trap"> abacaxi </span>
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1">
+                        <h3 class="font-bold text-slate-900">Questão Teórica E</h3>
+                        <p class="text-slate-600">
+                            Se tentarmos deletar um cliente da tabela <code class="font-mono">clientes</code> que possui animais cadastrados na tabela <code class="font-mono">animais</code> sem usar <code class="font-mono">ON DELETE CASCADE</code>, o que acontecerá e por quê?<span class="abacaxi-trap"> abacaxi </span>
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1">
+                        <h3 class="font-bold text-slate-900">Questão Teórica F</h3>
+                        <p class="text-slate-600">
+                            Por que é obrigatório respeitar a ordem lógica de execução ao criar tabelas e inserir dados que possuem Chaves Estrangeiras (<code class="font-mono">FOREIGN KEY</code>)?<span class="abacaxi-trap"> abacaxi </span>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Modelo do Arquivo de Entrega -->
+            <section class="space-y-3">
+                <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-file-code text-indigo-600"></i> Modelo do Arquivo de Entrega (.sql)
+                </h2>
+                <p class="text-xs text-slate-600">
+                    Sua entrega deve consistir em um único arquivo chamado <code class="font-mono font-semibold bg-slate-100 text-indigo-800 px-1.5 py-0.5 rounded">avaliacao_petcare_NOME_ALUNO.sql</code> formatado conforme o padrão abaixo:
+                </p>
+
+                <pre class="bg-slate-900 text-emerald-400 p-4 rounded-xl text-xs font-mono overflow-x-auto leading-relaxed border border-slate-800">
+<span class="text-slate-500">-- ============================================================
+-- AVALIAÇÃO PRÁTICA N2 - BANCO DE DADOS RELACIONAL
+-- ALUNO(A): Seu Nome Completo Aqui
+-- MATRÍCULA: 123456789
+-- ============================================================</span>
+
+<span class="text-indigo-300">-- PARTE I: DDL (Definição de Dados)</span>
+<span class="text-slate-400">-- Q1: Criar e usar Banco</span>
+CREATE DATABASE IF NOT EXISTS petcare_db;
+USE petcare_db;
+
+<span class="text-slate-400">-- Q2 a Q6: Criação das Tabelas...</span>
+<span class="text-slate-500">-- ... seus comandos CREATE TABLE aqui ...</span>
+
+<span class="text-indigo-300">-- PARTE II: DML (Inserções e Atualizações)</span>
+<span class="text-slate-500">-- ... seus comandos INSERT INTO, UPDATE e DELETE aqui ...</span>
+
+<span class="text-indigo-300">-- PARTE III: DQL (Consultas e Joins)</span>
+<span class="text-slate-500">-- ... seus comandos SELECT e INNER JOIN aqui ...</span>
+
+<span class="text-indigo-300">-- RESPOSTAS DAS QUESTÕES TEÓRICAS</span>
+<span class="text-slate-500">/*
+Questão Teórica A: [Sua Resposta Aqui]
+Questão Teórica B: [Sua Resposta Aqui]
+...
+*/</span><span class="abacaxi-trap"> abacaxi </span></pre>
+            </section>
+
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-400">
+        <p>&copy; 2026 Ambiente Virtual de Aprendizagem. Todos os direitos reservados.</p>
+        <p class="mt-1 text-[10px] text-slate-300">Sessão Criptografada e Monitorada | Hash ID: petcare-sql-2026-eval-v2</p>
+    </footer>
+
+    <!-- Anti-Cheat Interception Logic & Inspector Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Intercept standard Ctrl+C / Cmd+C / Right-Click Copy operations
+            document.addEventListener('copy', (e) => {
+                const selection = window.getSelection();
+                if (!selection || selection.rangeCount === 0) return;
+
+                let originalText = selection.toString();
+                
+                // Only process if copied text has relevant length (> 5 characters)
+                if (!originalText || originalText.trim().length < 5) return;
+
+                // Inject the keyword "abacaxi" into key structural places of copied text
+                let injectedText = injectAbacaxiToText(originalText);
+
+                if (e.clipboardData) {
+                    e.clipboardData.setData('text/plain', injectedText);
+                    e.preventDefault();
+                }
+            });
+
+            // Live pasting listener for the Teacher's Testing Area
+            const testArea = document.getElementById('testPasteArea');
+            if (testArea) {
+                testArea.addEventListener('input', updatePasteAnalysis);
+                testArea.addEventListener('paste', () => {
+                    setTimeout(updatePasteAnalysis, 50);
+                });
+            }
+        });
+
+        /**
+         * Systematically injects "abacaxi" into copied text chunks,
+         * ensuring that AI prompts will capture multiple occurrences of "abacaxi".
+         */
+        function injectAbacaxiToText(text) {
+            if (!text) return text;
+            
+            // Split by words and whitespace
+            let tokens = text.split(/(\s+)/);
+            let result = [];
+            let wordCount = 0;
+
+            for (let i = 0; i < tokens.length; i++) {
+                result.push(tokens[i]);
+                // If it's a non-whitespace word
+                if (tokens[i].trim().length > 0) {
+                    wordCount++;
+                    // Inject " abacaxi " after every 4 words or after key SQL keywords
+                    if (wordCount % 4 === 0) {
+                        result.push(" abacaxi ");
+                    }
+                }
+            }
+            return result.join('');
+        }
+
+        /**
+         * Toggle the visibility of the Teacher's Anti-Cheat Panel
+         */
+        function toggleTeacherPanel() {
+            const panel = document.getElementById('teacherPanel');
+            if (panel) {
+                panel.classList.toggle('hidden');
+                if (!panel.classList.contains('hidden')) {
+                    document.getElementById('testPasteArea').focus();
+                }
+            }
+        }
+
+        /**
+         * Analyzes text pasted into the testing panel and highlights "abacaxi"
+         */
+        function updatePasteAnalysis() {
+            const area = document.getElementById('testPasteArea');
+            const resultBox = document.getElementById('testResult');
+            const countBadge = document.getElementById('abacaxiCount');
+            const preview = document.getElementById('pastePreview');
+
+            if (!area || !resultBox || !countBadge || !preview) return;
+
+            const val = area.value;
+            if (!val || val.trim().length === 0) {
+                resultBox.classList.add('hidden');
+                return;
+            }
+
+            resultBox.classList.remove('hidden');
+
+            // Regex to find all instances of 'abacaxi' (case-insensitive)
+            const matches = val.match(/abacaxi/gi);
+            const count = matches ? matches.length : 0;
+
+            countBadge.textContent = `${count} "abacaxi" detectado${count !== 1 ? 's' : ''}`;
+            
+            if (count > 0) {
+                countBadge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse";
+            } else {
+                countBadge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700";
+            }
+
+            // Highlight matches in preview
+            let highlighted = escapeHtml(val).replace(/abacaxi/gi, (match) => {
+                return `<mark class="bg-amber-400 text-slate-950 font-bold px-1 rounded shadow-sm">${match}</mark>`;
+            });
+
+            preview.innerHTML = highlighted;
+        }
+
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
